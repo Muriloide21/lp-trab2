@@ -1,10 +1,86 @@
-type Point []float64
+--type Point []float64
 
-type Group []Point
+--type Group []Point
+
+function file_exists(file)
+    local f = io.open(file, "rb")
+    if f then f:close() end
+    return f ~= nil
+end
+
+function lines_from(file)
+    lines = {}
+    for line in io.lines(file) do
+        lines[#lines + 1] = line
+    end
+    return lines
+end
+
+-- local file = "teste.txt"
+-- local lines = lines_from(file)
+-- for k,v in pairs(lines) do
+--     print('line[' .. k .. ']', v)
+-- end
+
+function storePoints(fileName string) {
+	local file = io.Open(fileName, "r") --Abrindo arquivo
+	if file then
+		file:close()
+		print("Erro: não foi possível abrir o arquivo")
+		return nil
+	end
+	lines = lines_from(file)
+	point = {}
+	vecPoints = {}
+
+
+	-- var i int
+	-- var myfloat float64
+	-- var dim int
+	-- var p Point
+	-- var vecPoint []Point
+	-- scanner = bufio.NewScanner(file) //Criando um Scanner
+	for k,v in pairs(lines) do
+		while true do
+			a = f:read(*n)
+	-- 	if i == 0 {
+	-- 		firstline = scanner.Text()
+	-- 		//fmt.Println(firstline)
+	-- 		firstreader = strings.NewReader(firstline)
+	-- 		for {
+	-- 			_, err = fmt.Fscan(firstreader, &myfloat)
+	-- 			if err != nil {
+	-- 				break;
+	-- 			}
+	-- 			p = append(p, myfloat)
+	-- 			dim++ 
+	-- 		}
+	-- 		p = append(p, float64(i+1)) // O último elemento representa a linha em que o ponto foi lido
+	-- 		vecPoint = append(vecPoint, p)
+	-- 		//fmt.Println(dim)
+	-- 		//fmt.Println("Passou a primeira linha")
+	-- 	}else {
+	-- 		//fmt.Println("Próxima linha")
+	-- 		line = scanner.Text()
+	-- 		//fmt.Println(line)
+	-- 		reader = strings.NewReader(line)
+	-- 		p = nil
+	-- 		for j = 0; j < dim; j++ {
+	-- 			fmt.Fscan(reader, &myfloat)
+	-- 			p = append(p,myfloat)
+	-- 		}
+	-- 		p = append(p, float64(i+1)) // O último elemento representa a linha em que o ponto foi lido
+	-- 		vecPoint = append(vecPoint,p)
+	-- 		//printSlice(vecPoint)
+	-- 	}
+	-- 	i++
+	-- }
+	-- return vecPoint, dim
+}
 
 function main() {
-	fileName1 = "distancia.txt"
-	fileName2 = "entrada.txt"
+	local fileName1 = "distancia.txt"
+	local fileName2 = "entrada.txt"
 
 	limit = getLimit(fileName1)
 	vecPoint, dim = storePoints(fileName2)
@@ -105,54 +181,6 @@ func getLimit(fileName string) float64 {
 		fmt.Println("ERROR: Não foi possível fazer a leitura do limite")
     }
 	return limit
-}
-
-func storePoints(fileName string) ([]Point, int) {
-	file, err = os.Open(fileName) //Abrindo arquivo
-	if err != nil {
-		fmt.Println("DEU RUIM")
-	}
-
-	var i int
-	var myfloat float64
-	var dim int
-	var p Point
-	var vecPoint []Point
-	scanner = bufio.NewScanner(file) //Criando um Scanner
-	for scanner.Scan() {
-		if i == 0 {
-			firstline = scanner.Text()
-			//fmt.Println(firstline)
-			firstreader = strings.NewReader(firstline)
-			for {
-				_, err = fmt.Fscan(firstreader, &myfloat)
-				if err != nil {
-					break;
-				}
-				p = append(p, myfloat)
-				dim++ 
-			}
-			p = append(p, float64(i+1)) // O último elemento representa a linha em que o ponto foi lido
-			vecPoint = append(vecPoint, p)
-			//fmt.Println(dim)
-			//fmt.Println("Passou a primeira linha")
-		}else {
-			//fmt.Println("Próxima linha")
-			line = scanner.Text()
-			//fmt.Println(line)
-			reader = strings.NewReader(line)
-			p = nil
-			for j = 0; j < dim; j++ {
-				fmt.Fscan(reader, &myfloat)
-				p = append(p,myfloat)
-			}
-			p = append(p, float64(i+1)) // O último elemento representa a linha em que o ponto foi lido
-			vecPoint = append(vecPoint,p)
-			//printSlice(vecPoint)
-		}
-		i++
-	}
-	return vecPoint, dim
 }
 
 func printSlice(s []Point) {
