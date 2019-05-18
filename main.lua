@@ -22,7 +22,17 @@ end
 --     print('line[' .. k .. ']', v)
 -- end
 
-function storePoints(fileName string) {
+function createPoint(id, line)
+	local newpoint = {}
+	newpoint["id"] = id
+	newpoint["coordenadas"] = {}
+	for coordenada in string.gmatch(line, "%S+") do
+		newpoint[#newpoint.coordenadas+1] = tonumber(coordenada)
+	end
+	return newpoint
+end
+
+function storePoints(fileName) {
 	local file = io.Open(fileName, "r") --Abrindo arquivo
 	if file then
 		file:close()
@@ -30,19 +40,14 @@ function storePoints(fileName string) {
 		return nil
 	end
 	lines = lines_from(file)
-	point = {}
 	vecPoints = {}
 
-
-	-- var i int
-	-- var myfloat float64
-	-- var dim int
-	-- var p Point
-	-- var vecPoint []Point
-	-- scanner = bufio.NewScanner(file) //Criando um Scanner
 	for k,v in pairs(lines) do
-		while true do
-			a = f:read(*n)
+		point = createPoint(k,v)
+		vecPoints[point.id] = point
+	end
+	return vecPoints
+end
 	-- 	if i == 0 {
 	-- 		firstline = scanner.Text()
 	-- 		//fmt.Println(firstline)
@@ -76,47 +81,44 @@ function storePoints(fileName string) {
 	-- 	i++
 	-- }
 	-- return vecPoint, dim
-}
 
-function main() {
+function main() 
 	local fileName1 = "distancia.txt"
 	local fileName2 = "entrada.txt"
 
 	limit = getLimit(fileName1)
-	vecPoint, dim = storePoints(fileName2)
+	vecPoint = storePoints(fileName2)
 	--fmt.Println(dim)
 	--printSlice(vecPoint)
 	--fmt.Println(vecPoint[0])
 	groups = lider(vecPoint, limit, dim)
 	sse = calcSSE(groups, dim)
 	fmt.Println(sse)
-}
+end
 
-func lider(vecPoint []Point, limit float64, dim int) ([][]Point){
-	var groups [][]Point
-	var l Point
-	// pt = vecPoint[0]
-	// group0 = makeGroup(pt)
-	// groups = append(groups, group0)
-	for _, pt = range vecPoint {
+function lider(vecPoint, limit, dim) 
+	groups = {}
+	for j = 1, #vecPoints do
+		point = vecPoints[j]
 		lider = true
-		for j = 0; j < len(groups); j++ {
-			l = groups[j][0]
-			dist = getDistance(pt, l, dim)
-			if(dist <= limit) {
-				groups[j] = append(groups[j], pt)
+		for i = 1,#groups do
+			ptl = groups[i][1]
+			dist = getDistance(point, ptl, dim)
+			if(dist <= limit)
+				groups[i][#groups[i]+1] = point
 				lider = false
 				break
-			}
-		}
-		if (lider){
-			newgroup = makeGroup(pt)
-			groups = append(groups, newgroup)
-		}
-	}
-
-	//fmt.Println("DENTRO DA LÍDER")
-	//printGroups(groups, len(groups))
+			end
+		end
+		if (lider)
+			groups[#groups+1] = {}
+			groups[#groups] = {}
+			groups[#groups][1] = point
+		end
+	end
+	
+	-- //fmt.Println("DENTRO DA LÍDER")
+	-- //printGroups(groups, len(groups))
 	return groups
 }
 
@@ -155,14 +157,14 @@ func makeGroup(lider Point) ([]Point) {
 	return []Point{lider}
 }
 
-func getDistance(pt1 Point, pt2 Point, dim int) float64 {
-	var soma float64
-	for i = 0; i < dim; i++ {
+function getDistance(pt1, pt2)
+	soma = 0
+	for i = 0, #pt1.coordenadas do
 		soma = soma + ((pt1[i] - pt2[i])*(pt1[i] - pt2[i]))
-	}
+	end
 	distancia = math.Sqrt(soma)
 	return distancia
-}
+end
 
 func printGroups(groups [][]Point, tam int){
 	for i = 0; i < tam; i++ {
@@ -170,19 +172,18 @@ func printGroups(groups [][]Point, tam int){
 	} 
 }
 
-func getLimit(fileName string) float64 {
-	file, err = os.Open(fileName)
-	if err != nil {
-		fmt.Println("DEU RUIM")
-	}
-	var limit float64
-	n, err = fmt.Fscanln(file, &limit)
-	if n == 0 || err != nil {
-		fmt.Println("ERROR: Não foi possível fazer a leitura do limite")
-    }
+function getLimit(fileName)
+	local file = io.Open(fileName, "r") --Abrindo arquivo
+	if file then
+		file:close()
+		print("Erro: não foi possível abrir o arquivo")
+		return nil
+	end
+	limit = tonumber(io.read())
 	return limit
-}
+end
 
-func printSlice(s []Point) {
-	fmt.Printf("len=%d cap=%d %v\n", len(s), cap(s), s)
-}
+
+-- func printSlice(s []Point) {
+-- 	fmt.Printf("len=%d cap=%d %v\n", len(s), cap(s), s)
+-- }
